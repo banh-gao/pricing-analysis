@@ -20,10 +20,10 @@ Scarcity:
 * Input generation
 Different CPU demands (same for all scenarios)
 
-| Provider Interest / User Interest | No offer threshold                | Market price threshold                            |
-|-----------------------------------+-----------------------------------+---------------------------------------------------|
-| Social welfare                    | Accept any price while maximizing | Accept only prices around cloud market prices     |
-| Maximization                      | the amount of satisfied requests  | while maximizing the amount of satisfied requests |
-|-----------------------------------+-----------------------------------+---------------------------------------------------|
-| Resiliency                        | Accept any price while minimizing | Accept only prices around cloud market prices     |
-| Maximization                      | the downtime global likelihood    | while minimizing the downtime global likelihood   |
+| Provider vs Market Interests | No offer threshold                | Market price threshold                            |
+|------------------------------+-----------------------------------+---------------------------------------------------|
+| Social welfare Maximization  | Accept any price while maximizing | Accept only prices around cloud market prices     |
+|                              | the amount of satisfied requests  | while maximizing the amount of satisfied requests |
+|------------------------------+-----------------------------------+---------------------------------------------------|
+| Resiliency Maximization      | Accept any price while minimizing | Accept only prices around cloud market prices     |
+|                              | the downtime global likelihood    | while minimizing the downtime global likelihood   |
