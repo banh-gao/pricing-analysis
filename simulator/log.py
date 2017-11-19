@@ -12,10 +12,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright (C) 2016 Michele Segata <segata@ccs-labs.org>
-
-import sim
-from packet import Packet
-
+# Copyright (C) 2018 Daniel Zozin <d.zozin@fbk.eu>
 
 class Log:
     """
@@ -28,40 +25,14 @@ class Log:
         :param output_file: output file name. will be overwritten if already
         existing
         """
-        self.sim = sim.Sim.Instance()
         self.log_file = open(output_file, "w")
-        self.log_file.write("time,src,dst,event,size\n")
+        self.log_file.write("size,offer,price\n")
 
-    def log_packet(self, source, destination, packet):
+    def log_allocation(self, allocation):
         """
-        Logs the result of a packet reception.
-        :param source: source node
-        :param destination: destination node id
-        :param packet: the packet to log
+        Logs the result of an allocation request
+        :param allocation: resource allocation
         """
-        self.log_file.write("%f,%d,%d,%d,%d\n" %
-                            (self.sim.get_time(), source.get_id(),
-                             destination.get_id(), packet.get_state(),
-                             packet.get_size()))
-
-    def log_queue_drop(self, source, packet_size):
-        """
-        Logs a queue drop
-        :param source: source node
-        :param packet_size: size of the packet being dropped
-        """
-        self.log_file.write("%f,%d,%d,%d,%d\n" %
-                            (self.sim.get_time(), source.get_id(),
-                             source.get_id(), Packet.PKT_QUEUE_DROPPED,
-                             packet_size))
-
-    def log_arrival(self, source, packet_size):
-        """
-        Logs an arrival
-        :param source: source node
-        :param packet_size: size of the packet being dropped
-        """
-        self.log_file.write("%f,%d,%d,%d,%d\n" %
-                            (self.sim.get_time(), source.get_id(),
-                             source.get_id(), Packet.PKT_GENERATED,
-                             packet_size))
+        self.log_file.write("%d,%d,%d\n" %
+                            (allocation.get_size(), allocation.get_offer(),
+                             allocation.get_price()))

@@ -36,8 +36,7 @@ class Sim:
     # name of the section in the configuration file that includes all simulation
     # parameters
     PAR_SECTION = "Simulation"
-    # simulation cluster size parameter
-    PAR_SIZE = "cluster_size"
+
     # seed for PRNGs
     PAR_SEED = "seed"
 
@@ -51,8 +50,6 @@ class Sim:
         self.config_file = ""
         # empty section
         self.section = ""
-
-        self.cluster = Cluster()
 
     def set_config(self, config_file, section):
         """
@@ -99,6 +96,8 @@ class Sim:
         self.seed = self.config.get_param(self.PAR_SEED)
         random.seed(self.seed)
 
+        self.cluster = Cluster(self.config)
+
         # initialize cluster
         self.cluster.initialize()
 
@@ -126,13 +125,9 @@ class Sim:
         # print percentage for the first time (0%)
         self.print_percentage(True)
         # main simulation loop
-        while self.cluster.allocated() <= self.cluster.get_total_size():
-            # build next allocation request
-            try:
-                self.cluster.request_allocation()
-            except AllocationException as e:
-                #TODO handle exception
-                print e
+        while self.cluster.get_allocated() < self.cluster.get_total_size():
+            # request next allocation
+            self.cluster.request_allocation()
 
             # get current real time
             curr_time = time.time()
@@ -156,10 +151,10 @@ class Sim:
             sys.stdout.write('\r' + ERASE_LINE)
         # compute percentage
         allocation = self.cluster.get_allocated()
-        size = self.cluster.get_total_size()
+        size = float(self.cluster.get_total_size())
         perc = min(100, int(math.floor(allocation/size*100)))
         # print progress bar, percentage, and current element
-        sys.stdout.write("[%-20s] %d%% (allocated = %f, total size = %f)" %
+        sys.stdout.write("[%-20s] %d%% (allocated = %d, total size = %d)" %
                          ('='*(perc/5), perc, allocation, size))
         sys.stdout.flush()
 

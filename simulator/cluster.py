@@ -13,11 +13,31 @@
 #
 # Copyright (C) 2018 Daniel Zozin <d.zozin@fbk.eu>
 
+import time
 
 class Cluster:
     """
     This class allocates resources on the cluster by calling the cluster API
     """
 
+    def __init__(self, config):
+        self.config = config
+        self.allocation = 0
+
+    def initialize(self):
+        #TODO clean cluster from previous allocations
+        pass
+
+    def get_allocated(self):
+        #TODO get currently allocated resources size
+        return self.allocation
+
+    def get_total_size(self):
+        #TODO get total cluster size
+        return 10
+
     def request_allocation(self):
         #TODO call allocation API
+        if(self.allocation < self.get_total_size()):
+            self.allocation += 1
+            time.sleep(1)
