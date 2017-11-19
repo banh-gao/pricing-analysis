@@ -1,16 +1,20 @@
 {
-	"simulation" : {
-		// seed(s) to initialize PRNGs
-		"seed" : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "simulation" : {
+        // seed(s) to initialize PRNGs
+        "seed" : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         // offer for resources allocation
-		"offer" : {"distribution" : "const", "mean" : 10},
+        "offer" : {"distribution" : "const", "mean" : 10},
         // resource size distribution in bytes
-		"size" : [
+        "size" : [
             {"distribution" : "unif", "min" : 10, "max" : 1000, "int" : 1},
             {"distribution" : "unif", "min" : 100, "max" : 10000, "int" : 1},
             {"distribution" : "unif", "min" : 1000, "max" : 100000, "int" : 1}
-		],
-		// log file name using configuration parameters
-		"output" : "output_{size.max}_{seed}.csv"
-	}
+        ],
+        // application to deploy
+        "application" : "busybox",
+        // API endpoint
+        "endpoint" : "http:\/\/localhost:8080\/api",
+        // log file name using configuration parameters
+        "output" : "output_{size.max}_{seed}.csv"
+    }
 }
