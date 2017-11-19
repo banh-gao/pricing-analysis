@@ -14,30 +14,73 @@
 # Copyright (C) 2018 Daniel Zozin <d.zozin@fbk.eu>
 
 import time
+import sim
+from distribution import Distribution
+
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+from swagger_client.configuration import Configuration
 
 class Cluster:
     """
     This class allocates resources on the cluster by calling the cluster API
     """
 
-    def __init__(self, config):
-        self.config = config
-        self.allocation = 0
+    SIZE = "size"
+    OFFER = "offer"
+    APPLICATION = "application"
+    ENDPOINT = "endpoint"
 
-    def initialize(self):
+    def __init__(self):
+        self.sim = sim.Sim.Instance()
+        self.logger = self.sim.get_logger()
+
+    def initialize(self, config):
+        self.run_number = config.run_number
+        self.application = config.get_param(Cluster.APPLICATION)
+        self.size = Distribution(config.get_param(Cluster.SIZE))
+        self.offer = Distribution(config.get_param(Cluster.OFFER))
+
+        Configuration().host = config.get_param(Cluster.ENDPOINT)
+        self.api = swagger_client.DeploymentsApi()
+
+        self.index = 0
+
+        self._clean_cluster()
+
+    def _clean_cluster(self):
         #TODO clean cluster from previous allocations
         pass
 
     def get_allocated(self):
-        #TODO get currently allocated resources size
-        return self.allocation
+        '''Get currently allocated resources size'''
+        deployments = self.api.get_deployments_collection()
+
+        allocation = 0
+        for d in deployments:
+            pass
+
+        return allocation
 
     def get_total_size(self):
         #TODO get total cluster size
         return 10
 
     def request_allocation(self):
-        #TODO call allocation API
-        if(self.allocation < self.get_total_size()):
-            self.allocation += 1
-            time.sleep(1)
+        size = self.size.get_value()
+        if(self.get_allocated() + size > self.get_total_size()):
+            size = self.get_total_size() - self.get_allocated()
+
+        app_name = "test-%s-%s".format(self.run_number, self.index)
+        self.index += 1
+
+        payload = swagger_client.DeploymentRequest()
+        payload.application = self.application
+        payload.offer = self.offer.get_value()
+        payload.resources = [{'name': 'memory', 'amount': size }]
+
+        # Request an application deployment
+        allocation = self.api.put_deployment(app_name, payload)
+
+        self.logger.log_allocation(self, allocation)

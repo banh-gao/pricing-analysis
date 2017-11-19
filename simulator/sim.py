@@ -96,10 +96,10 @@ class Sim:
         self.seed = self.config.get_param(self.PAR_SEED)
         random.seed(self.seed)
 
-        self.cluster = Cluster(self.config)
+        self.cluster = Cluster()
 
         # initialize cluster
-        self.cluster.initialize()
+        self.cluster.initialize(self.config)
 
         # all done. simulation can start now
         self.initialized = True
