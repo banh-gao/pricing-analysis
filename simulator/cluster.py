@@ -77,7 +77,7 @@ class Cluster:
         if(self.get_allocated() + size > self.get_total_size()):
             size = self.get_total_size() - self.get_allocated()
 
-        app_name = "test-%s-%s".format(self.run_number, self.index)
+        app_name = "test-%s-%s" % (self.run_number, self.index)
         self.index += 1
 
         payload = swagger_client.DeploymentRequest(self.application,
