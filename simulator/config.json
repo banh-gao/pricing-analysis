@@ -2,6 +2,8 @@
     "simulation" : {
         // seed(s) to initialize PRNGs
         "seed" : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        // Maximum deployment requests before terminating the simulation
+        "max_requests": 10,
         // offer for resources allocation
         "offer" : {"distribution" : "const", "mean" : 10},
         // resource to allocate

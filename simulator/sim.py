@@ -39,6 +39,8 @@ class Sim:
 
     # seed for PRNGs
     PAR_SEED = "seed"
+    # Maximum deployment requests before terminating the simulation
+    MAX_REQUESTS = "max_requests"
 
     def __init__(self):
         """
@@ -96,6 +98,9 @@ class Sim:
         self.seed = self.config.get_param(self.PAR_SEED)
         random.seed(self.seed)
 
+        self.requests_count = 0
+        self.max_requests = self.config.get_param(self.MAX_REQUESTS)
+
         self.cluster = Cluster()
 
         # initialize cluster
@@ -125,10 +130,11 @@ class Sim:
         # print percentage for the first time (0%)
         self.print_percentage(True)
         # main simulation loop
-        while self.cluster.get_allocated() < self.cluster.get_total_size():
+        while self.requests_count < self.max_requests:
             # request next allocation
             self.cluster.request_allocation()
 
+            self.requests_count += 1
             # get current real time
             curr_time = time.time()
             # if more than a second has elapsed, update the percentage bar
@@ -144,7 +150,7 @@ class Sim:
         # compute how much time the simulation took
         end_time = time.time()
         total_time = round(end_time - start_time)
-        print("\nMaximum simulation time reached. Terminating.")
+        print("\nMaximum deployment requests reached. Terminating.")
         print("Total simulation time: %d hours, %d minutes, %d seconds" %
               (total_time / 3600, total_time % 3600 / 60,
                total_time % 3600 % 60))
@@ -154,12 +160,10 @@ class Sim:
         if not first:
             sys.stdout.write('\r' + ERASE_LINE)
         # compute percentage
-        allocation = self.cluster.get_allocated()
-        size = float(self.cluster.get_total_size())
-        perc = min(100, int(math.floor(allocation/size*100)))
+        perc = min(100, int(math.floor(float(self.requests_count)/self.max_requests*100)))
         # print progress bar, percentage, and current element
-        sys.stdout.write("[%-20s] %d%% (allocated = %d, total size = %d)" %
-                         ('='*(perc/5), perc, allocation, size))
+        sys.stdout.write("[%-20s] %d%% (requested = %d, total = %d)" %
+                         ('='*(perc/5), perc, self.requests_count, self.max_requests))
         sys.stdout.flush()
 
     def get_params(self, run_number):
