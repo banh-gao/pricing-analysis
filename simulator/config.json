@@ -4,6 +4,8 @@
         "seed" : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         // offer for resources allocation
         "offer" : {"distribution" : "const", "mean" : 10},
+        // resource to allocate
+        "resource" : "memory",
         // resource size distribution in bytes
         "size" : [
             {"distribution" : "unif", "min" : 10, "max" : 1000, "int" : 1},

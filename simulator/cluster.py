@@ -31,6 +31,7 @@ class Cluster:
     OFFER = "offer"
     APPLICATION = "application"
     ENDPOINT = "endpoint"
+    RESOURCE = "resource"
 
     def __init__(self):
         self.sim = sim.Sim.Instance()
@@ -41,6 +42,7 @@ class Cluster:
         self.application = config.get_param(Cluster.APPLICATION)
         self.size = Distribution(config.get_param(Cluster.SIZE))
         self.offer = Distribution(config.get_param(Cluster.OFFER))
+        self.resource = config.get_param(Cluster.RESOURCE)
 
         Configuration().host = config.get_param(Cluster.ENDPOINT)
         self.api = swagger_client.DeploymentsApi()
@@ -78,7 +80,7 @@ class Cluster:
         payload = swagger_client.DeploymentRequest()
         payload.application = self.application
         payload.offer = self.offer.get_value()
-        payload.resources = [{'name': 'memory', 'amount': size }]
+        payload.resources = [{'name': self.resource, 'amount': size }]
 
         # Request an application deployment
         allocation = self.api.put_deployment(app_name, payload)
