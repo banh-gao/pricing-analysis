@@ -74,8 +74,6 @@ class Cluster:
 
     def request_allocation(self):
         size = self.size.get_value()
-        if(self.get_allocated() + size > self.get_total_size()):
-            size = self.get_total_size() - self.get_allocated()
 
         app_name = "test-%s-%s" % (self.run_number, self.index)
         self.index += 1
