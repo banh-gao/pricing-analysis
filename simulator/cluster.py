@@ -60,8 +60,10 @@ class Cluster:
         deployments = self.api.get_deployments_collection()
 
         allocation = 0
-        for d in deployments:
-            pass
+        for d in deployments.deployments:
+            for res in d.resources:
+                if res['name'] == self.resource:
+                    allocation += res['amount']
 
         return allocation
 
