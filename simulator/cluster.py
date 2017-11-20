@@ -50,7 +50,6 @@ class Cluster:
         self.index = 0
 
     def finalize(self):
-        #TODO clean cluster from previous allocations
         deployments = self.api.get_deployments_collection()
 
         for d in deployments.deployments:
@@ -68,10 +67,6 @@ class Cluster:
 
         return allocation
 
-    def get_total_size(self):
-        #TODO get total cluster size
-        return 10
-
     def request_allocation(self):
         size = self.size.get_value()
 
@@ -83,6 +78,8 @@ class Cluster:
                                                    [{'name': self.resource, 'amount': str(size) }])
 
         # Request an application deployment
-        allocation = self.api.put_deployment(app_name, payload)
-
-        self.logger.log_allocation(self, allocation)
+        try:
+            allocation = self.api.put_deployment(app_name, payload)
+        except ApiException as e:
+            print e
+        #self.logger.log_allocation(self, allocation)
