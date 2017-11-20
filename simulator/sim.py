@@ -135,6 +135,10 @@ class Sim:
             if curr_time - prev_time >= 1:
                 self.print_percentage(False)
                 prev_time = curr_time
+
+        #Clean up
+        self.cluster.finalize()
+
         # simulation completed, print the percentage for the last time (100%)
         self.print_percentage(False)
         # compute how much time the simulation took

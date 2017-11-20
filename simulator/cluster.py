@@ -49,11 +49,12 @@ class Cluster:
 
         self.index = 0
 
-        self._clean_cluster()
-
-    def _clean_cluster(self):
+    def finalize(self):
         #TODO clean cluster from previous allocations
-        pass
+        deployments = self.api.get_deployments_collection()
+
+        for d in deployments.deployments:
+            self.api.delete_deployment(d.name)
 
     def get_allocated(self):
         '''Get currently allocated resources size'''
