@@ -80,10 +80,9 @@ class Cluster:
         app_name = "test-%s-%s".format(self.run_number, self.index)
         self.index += 1
 
-        payload = swagger_client.DeploymentRequest()
-        payload.application = self.application
-        payload.offer = self.offer.get_value()
-        payload.resources = [{'name': self.resource, 'amount': size }]
+        payload = swagger_client.DeploymentRequest(self.application,
+                                                   str(self.offer.get_value()),
+                                                   [{'name': self.resource, 'amount': str(size) }])
 
         # Request an application deployment
         allocation = self.api.put_deployment(app_name, payload)
