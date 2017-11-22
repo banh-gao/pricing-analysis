@@ -73,13 +73,13 @@ class Cluster:
         app_name = "test-%s-%s" % (self.run_number, self.index)
         self.index += 1
 
-        payload = swagger_client.DeploymentRequest(self.application,
+        request = swagger_client.DeploymentRequest(self.application,
                                                    str(self.offer.get_value()),
                                                    [{'name': self.resource, 'amount': str(size) }])
 
         # Request an application deployment
         try:
-            allocation = self.api.put_deployment(app_name, payload)
+            allocation = self.api.put_deployment(app_name, request)
+            self.logger.log_allocation(allocation)
         except ApiException as e:
-            print e
-        #self.logger.log_allocation(self, allocation)
+            self.logger.log_failure(request)

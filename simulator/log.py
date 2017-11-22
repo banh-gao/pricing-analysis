@@ -19,6 +19,9 @@ class Log:
     Defines data logging utilities
     """
 
+    TYPE_SUCCESS = "0"
+    TYPE_FAILURE = "1"
+
     def __init__(self, output_file):
         """
         Constructor.
@@ -26,13 +29,25 @@ class Log:
         existing
         """
         self.log_file = open(output_file, "w")
-        self.log_file.write("size,offer,price\n")
+        self.log_file.write("type,size,node,unit_price,offer,price\n")
 
     def log_allocation(self, allocation):
         """
         Logs the result of an allocation request
         :param allocation: resource allocation
         """
-        self.log_file.write("%d,%d,%d\n" %
-                            (allocation.get_size(), allocation.get_offer(),
-                             allocation.get_price()))
+        self.log_file.write(self.TYPE_SUCCESS + ",%f,%s,%f,%f,%f\n" %
+                            (float(allocation.resources[0]['amount']),
+                             allocation.node.name,
+                             float(allocation.node.resources['memory']['unit_price']),
+                             float(allocation.offer),
+                             float(allocation.price)))
+
+    def log_failure(self, request):
+        """
+        Logs the result of an allocation request
+        :param allocation: resource allocation
+        """
+        self.log_file.write(self.TYPE_FAILURE + ",%f,-,0.0,%f,0.0\n" %
+                            (float(request.resources[0]['amount']),
+                             float(request.offer)))
