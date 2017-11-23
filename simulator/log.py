@@ -19,8 +19,8 @@ class Log:
     Defines data logging utilities
     """
 
-    TYPE_SUCCESS = "0"
-    TYPE_FAILURE = "1"
+    TYPE_SUCCESS = "1"
+    TYPE_FAILURE = "0"
 
     def __init__(self, output_file):
         """
@@ -29,7 +29,7 @@ class Log:
         existing
         """
         self.log_file = open(output_file, "w")
-        self.log_file.write("type,size,node,unit_price,offer,price\n")
+        self.log_file.write("accepted,size,node,unit_price,offer,price\n")
 
     def log_allocation(self, allocation):
         """
