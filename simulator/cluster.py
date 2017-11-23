@@ -19,7 +19,6 @@ from distribution import Distribution
 
 import swagger_client
 from swagger_client.rest import ApiException
-from pprint import pprint
 from swagger_client.configuration import Configuration
 
 class Cluster:
@@ -52,7 +51,10 @@ class Cluster:
 
     def finalize(self):
         for app in self.requests:
-            self.api.delete_deployment(app)
+            try:
+                self.api.delete_deployment(app)
+            except ApiException:
+                pass
 
     def request_allocation(self):
         size = self.size.get_value()
