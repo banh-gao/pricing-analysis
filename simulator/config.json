@@ -1,16 +1,17 @@
 {
     "simulation" : {
         // seed(s) to initialize PRNGs
-        "seed" : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        "seed" : [0, 1],
         // Maximum deployment requests before terminating the simulation
-        "max_requests": 10,
+        "max_requests": 40,
         // offer for resources allocation
-        "offer" : {"distribution" : "const", "mean" : 10},
+        "offer" : {"distribution" : "const", "mean" : 1000},
         // resource to allocate
         "resource" : "memory",
         // resource size distribution in bytes
         "size" : [
             {"distribution" : "unif", "min" : 500e6, "max" : 1000e6, "int" : 1},
+            {"distribution" : "unif", "min" : 1000e6, "max" : 2000e6, "int" : 1},
             {"distribution" : "unif", "min" : 2000e6, "max" : 4000e6, "int" : 1},
             {"distribution" : "unif", "min" : 4000e6, "max" : 8000e6, "int" : 1}
         ],
