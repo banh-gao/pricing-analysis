@@ -48,6 +48,6 @@ class Log:
         Logs the result of an allocation request
         :param allocation: resource allocation
         """
-        self.log_file.write(self.TYPE_FAILURE + ",%f,-,0.0,%f,0.0\n" %
+        self.log_file.write(self.TYPE_FAILURE + ",%f,,,%f,\n" %
                             (float(request.resources[0]['amount']),
                              float(request.offer)))
