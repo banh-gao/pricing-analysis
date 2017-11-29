@@ -27,5 +27,13 @@ for filename in glob.glob(data_files):
     data = data.append(df, ignore_index=True)
 
 # Count acceptance rate
-acceptance = data.query('accepted == 1').count() / data.count()
-print acceptance.accepted
+def acceptance(data):
+    acceptance = data.loc[(data == 1)].count() / float(data.count())
+    return acceptance
+
+# Acceptance rate by size
+bysize = data.groupby(['min_size', 'max_size'])
+acceptance = bysize['accepted'].agg({ 'acceptance': acceptance })
+
+fig = acceptance.plot().get_figure()
+fig.savefig('acceptance.pdf')
