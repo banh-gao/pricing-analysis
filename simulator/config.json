@@ -20,6 +20,6 @@
         // API endpoint
         "endpoint" : "http:\/\/localhost:8080\/api",
         // log file name using configuration parameters
-        "output" : "output_{size.max}_{seed}.csv"
+        "output" : "output_{size.min}_{size.max}_{seed}.csv"
     }
 }
