@@ -16,7 +16,7 @@
             {"distribution" : "unif", "min" : 4000e6, "max" : 8000e6, "int" : 1}
         ],
         // application to deploy
-        "application" : "nginx",
+        "application" : "alpine",
         // API endpoint
         "endpoint" : "http:\/\/localhost:8080\/api",
         // log file name using configuration parameters
