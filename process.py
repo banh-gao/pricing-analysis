@@ -21,6 +21,8 @@ def net_utility(row):
         return 0
 
 parser = argparse.ArgumentParser(description='Process simulation data.')
+parser.add_argument('--setup', dest='setup', required=True,
+                    help='Name of the experiment setup')
 parser.add_argument('in_files', type=str, nargs='+',
                     help='The data input files')
 
@@ -39,7 +41,6 @@ for filename in args.in_files:
 data['utility'] = data.apply(net_utility, axis=1)
 
 bysize = data.groupby(['max_size'])
-bysize = bysize.agg({'utility': np.sum})
-print bysize
-fig = bysize.plot().get_figure()
-fig.savefig('acceptance.pdf')
+utilities = bysize.agg({'utility': np.sum}).reset_index()
+
+utilities.to_pickle("./utilities_%s.pkl" % args.setup)
