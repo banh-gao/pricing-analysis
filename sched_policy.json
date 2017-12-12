@@ -1,0 +1,16 @@
+{
+"kind" : "Policy",
+"apiVersion" : "v1",
+"predicates" : [
+        {"name" : "PodFitsHostPorts"},
+        {"name" : "PodFitsResources"},
+        {"name" : "NoDiskConflict"},
+        {"name" : "NoVolumeZoneConflict"},
+        {"name" : "MatchNodeSelector"},
+        {"name" : "HostName"}
+        ],
+"priorities" : [
+        {"name" : "MostRequestedPriority", "weight" : 1}
+        ],
+"hardPodAffinitySymmetricWeight" : 10
+}
