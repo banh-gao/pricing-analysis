@@ -62,8 +62,13 @@ class Cluster:
         app_name = "test-%s-%s" % (self.run_number, self.index)
         self.index += 1
 
+        unity_offer = self.offer.get_value()
+
+        # Offer for the requested size
+        offer = size * unity_offer
+
         request = swagger_client.DeploymentRequest(self.application,
-                                                   str(self.offer.get_value()),
+                                                   str(offer),
                                                    [{'name': self.resource, 'amount': str(size) }])
 
         self.requests.append(app_name)
