@@ -14,6 +14,7 @@
 # Copyright (C) 2016 Michele Segata <segata@ccs-labs.org>
 
 import random
+import numpy as np
 import sys
 
 
@@ -35,12 +36,18 @@ class Distribution:
     MAX = "max"
     # integer distribution field
     INT = "int"
+    # shape distribution field
+    SHAPE = "shape"
+    # mode distribution field
+    MODE = "mode"
     # constant random variable
     CONSTANT = "const"
     # uniform random variable
     UNIFORM = "unif"
     # exponential random variable
     EXPONENTIAL = "exp"
+    # pareto random variable
+    PARETO = "pareto"
 
     def __init__(self, config):
         """
@@ -53,6 +60,8 @@ class Distribution:
         with mean being 1/lambda. "lambda" : value can also be used
         {"distribution" : "unif", "min" : value, "max" : value}, uniform random
         variable between min and max
+        {"distribution" : "pareto", "shape": value, "mode": value}, pareto
+        random variable with shape and mode
         """
         try:
             # find the correct distribution depending on the specified name
@@ -68,6 +77,15 @@ class Distribution:
                     integer = False
                 self.d = Uniform(config[Distribution.MIN],
                                  config[Distribution.MAX], integer)
+            elif config[Distribution.DISTRIBUTION] == Distribution.PARETO:
+                integer = False
+                try:
+                    int_distribution = config[Distribution.INT]
+                    if int_distribution == 1:
+                        integer = True
+                except Exception:
+                    integer = False
+                self.d = Pareto(config[Distribution.SHAPE], config[Distribution.MODE], integer)
             elif config[Distribution.DISTRIBUTION] == Distribution.EXPONENTIAL:
                 if Distribution.MEAN in config:
                     self.d = Exp(config[Distribution.MEAN])
@@ -139,3 +157,27 @@ class Exp:
 
     def get_value(self):
         return random.expovariate(self.l)
+
+
+class Pareto:
+    """
+    Pareto random variable
+    """
+
+    def __init__(self, shape, mode, integer=False):
+        """
+        Constructor
+        :param shape: pareto shape parameter
+        :param mode: pareto mode parameter
+        :param integer: whether to use integer or floating point numbers
+        """
+        self.shape = shape
+        self.mode = mode
+        self.integer = integer
+
+    def get_value(self):
+        value = (np.random.pareto(self.shape)  + 1) * self.mode
+        if self.integer:
+            return round(value)
+        else:
+            return value

@@ -10,16 +10,13 @@
         "resource" : "memory",
         // resource size distribution in bytes
         "size" : [
-            {"distribution" : "unif", "min" : 500e6, "max" : 1000e6, "int" : 1},
-            {"distribution" : "unif", "min" : 1000e6, "max" : 2000e6, "int" : 1},
-            {"distribution" : "unif", "min" : 2000e6, "max" : 4000e6, "int" : 1},
-            {"distribution" : "unif", "min" : 4000e6, "max" : 8000e6, "int" : 1}
+            {"distribution" : "pareto" , "shape" : 1, "mode" : 1000e6, "int" : 1}
         ],
         // application to deploy
         "application" : "alpine",
         // API endpoint
         "endpoint" : "http:\/\/localhost:8080\/api",
         // log file name using configuration parameters
-        "output" : "output_{size.min}_{size.max}_{seed}.csv"
+        "output" : "output_{size.mode}_{seed}.csv"
     }
 }
