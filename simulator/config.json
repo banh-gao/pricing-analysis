@@ -4,13 +4,13 @@
         "seed" : [0, 1],
         // Maximum deployment requests before terminating the simulation
         "max_requests": 20,
-        // offer value for per kiloByte
+        // offer value for per megaByte
         "offer" : {"distribution" : "const", "mean" : 1},
         // resource to allocate
         "resource" : "memory",
-        // resource size distribution in kiloBytes
+        // resource size distribution in megaBytes
         "size" : [
-            {"distribution" : "pareto" , "shape" : 1, "mode" : 1000e3, "int" : 1}
+            {"distribution" : "pareto" , "shape" : 1, "mode" : 1000, "int" : 1}
         ],
         // application to deploy
         "application" : "alpine",

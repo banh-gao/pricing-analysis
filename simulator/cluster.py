@@ -32,6 +32,9 @@ class Cluster:
     ENDPOINT = "endpoint"
     RESOURCE = "resource"
 
+    #size in megaBytes
+    SCALE = 10**6
+
     def __init__(self):
         self.sim = sim.Sim.Instance()
         self.logger = self.sim.get_logger()
@@ -57,25 +60,29 @@ class Cluster:
                 pass
 
     def request_allocation(self):
-        size = self.size.get_value()
 
         app_name = "test-%s-%s" % (self.run_number, self.index)
         self.index += 1
 
         unity_offer = self.offer.get_value()
 
-        # Offer for the requested size
-        offer = size * unity_offer
+        scaled_size = self.size.get_value()
 
+        # Offer for the requested size (same magnitude)
+        offer = scaled_size * unity_offer
+
+        raw_size = scaled_size * self.SCALE
         request = swagger_client.DeploymentRequest(self.application,
                                                    str(offer),
-                                                   [{'name': self.resource, 'amount': str(size) }])
+                                                   [{'name': self.resource, 'amount': str(raw_size) }])
 
         self.requests.append(app_name)
 
         # Request an application deployment
         try:
             allocation = self.api.put_deployment(app_name, request)
+            allocation.resources[0]['amount'] = int(allocation.resources[0]['amount']) / self.SCALE
             self.logger.log_allocation(allocation)
         except ApiException as e:
+            request.resources[0]['amount'] = scaled_size
             self.logger.log_failure(request)
