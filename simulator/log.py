@@ -29,17 +29,16 @@ class Log:
         existing
         """
         self.log_file = open(output_file, "w")
-        self.log_file.write("accepted,size,node,unit_price,offer,price\n")
+        self.log_file.write("accepted,size,node,offer,price\n")
 
-    def log_allocation(self, allocation):
+    def log_allocation(self, allocation, resource):
         """
         Logs the result of an allocation request
         :param allocation: resource allocation
         """
-        self.log_file.write(self.TYPE_SUCCESS + ",%f,%s,%f,%f,%f\n" %
-                            (float(allocation.resources[0]['amount']),
-                             allocation.node.name,
-                             float(allocation.node.resources['memory']['unit_price']),
+        self.log_file.write(self.TYPE_SUCCESS + ",%f,%s,%f,%f\n" %
+                            (float(allocation.resources[resource]['allocated']),
+                             allocation.node,
                              float(allocation.offer),
                              float(allocation.price)))
 
@@ -48,6 +47,6 @@ class Log:
         Logs the result of an allocation request
         :param allocation: resource allocation
         """
-        self.log_file.write(self.TYPE_FAILURE + ",%f,,,%f,\n" %
+        self.log_file.write(self.TYPE_FAILURE + ",%f,,%f,\n" %
                             (float(request.resources[0]['amount']),
                              float(request.offer)))
