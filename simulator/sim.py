@@ -16,7 +16,7 @@
 
 import sys
 import random
-import numpy
+import scipy
 import time
 import math
 from singleton import Singleton
@@ -98,7 +98,7 @@ class Sim:
         # get seeds. each seed generates a simulation repetition
         self.seed = self.config.get_param(self.PAR_SEED)
         random.seed(self.seed)
-        numpy.random.seed(self.seed)
+        scipy.random.seed(self.seed)
 
         self.requests_count = 0
         self.max_requests = self.config.get_param(self.MAX_REQUESTS)

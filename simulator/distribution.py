@@ -12,9 +12,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright (C) 2016 Michele Segata <segata@ccs-labs.org>
+# Copyright (C) 2018 Daniel Zozin <d.zozin@fbk.eu>
 
-import random
-import numpy as np
+import scipy.integrate as integrate
+import scipy.stats as stats
 import sys
 
 
@@ -102,6 +103,9 @@ class Distribution:
     def get_value(self):
         return self.d.get_value()
 
+    def get_probability(self, a, b):
+        """ Get the probability of assuming values in the given interval"""
+        return self.d.get_probability(a, b)
 
 class Const:
     """
@@ -118,6 +122,11 @@ class Const:
     def get_value(self):
         return self.value
 
+    def get_probability(self, a, b):
+        if a <= self.value and self.value <= b:
+            return 1
+        else:
+            return 0
 
 class Uniform:
     """
@@ -136,12 +145,14 @@ class Uniform:
         self.integer = integer
 
     def get_value(self):
-        value = random.uniform(self.min, self.max)
+        value =  stats.uniform.rvs(self.min, self.max)
         if self.integer:
             return round(value)
         else:
             return value
 
+    def get_probability(self, a, b):
+        return integrate.quad(lambda x: stats.uniform.pdf(x, self.min, self.max), a, b)[0]
 
 class Exp:
     """
@@ -151,13 +162,15 @@ class Exp:
     def __init__(self, mean):
         """
         Constructor
-        :param mean: mean value (1/lambda)
+        :param mean: mean value
         """
-        self.l = 1/mean
+        self.mean = mean
 
     def get_value(self):
-        return random.expovariate(self.l)
+        return stats.expon.rvs(0, self.mean)
 
+    def get_probability(self, a, b):
+        return integrate.quad(lambda x: stats.expon.pdf(x, 0, self.mean), a, b)[0]
 
 class Pareto:
     """
@@ -176,8 +189,11 @@ class Pareto:
         self.integer = integer
 
     def get_value(self):
-        value = (np.random.pareto(self.shape)  + 1) * self.mode
+        value = stats.pareto.rvs(self.shape, self.mode)
         if self.integer:
             return round(value)
         else:
             return value
+
+    def get_probability(self, a, b):
+        return integrate.quad(lambda x: stats.pareto.pdf(x, self.shape, self.mode), a, b)[0]
