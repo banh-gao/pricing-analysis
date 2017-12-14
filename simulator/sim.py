@@ -40,8 +40,11 @@ class Sim:
 
     # seed for PRNGs
     PAR_SEED = "seed"
-    # Maximum deployment requests before terminating the simulation
-    MAX_REQUESTS = "max_requests"
+
+
+    # Run simulation as long as the probability of allocating resources is
+    # higher than this value
+    HALTING_THRESHOLD = "halting_threshold"
 
     def __init__(self):
         """
@@ -100,8 +103,7 @@ class Sim:
         random.seed(self.seed)
         scipy.random.seed(self.seed)
 
-        self.requests_count = 0
-        self.max_requests = self.config.get_param(self.MAX_REQUESTS)
+        self.halting_threshold = self.config.get_param(self.HALTING_THRESHOLD)
 
         self.cluster = Cluster()
 
@@ -132,11 +134,10 @@ class Sim:
         # print percentage for the first time (0%)
         self.print_percentage(True)
         # main simulation loop
-        while self.requests_count < self.max_requests:
+        while self.cluster.get_allocation_probability() > self.halting_threshold:
             # request next allocation
             self.cluster.request_allocation()
 
-            self.requests_count += 1
             # get current real time
             curr_time = time.time()
             # if more than a second has elapsed, update the percentage bar

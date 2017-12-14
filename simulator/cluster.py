@@ -47,6 +47,7 @@ class Cluster:
         self.resource_scale = int(config.get_param(Cluster.RESOURCE_SCALE))
         Configuration().host = config.get_param(Cluster.ENDPOINT)
         self.api = swagger_client.DeploymentsApi()
+        self.nodes_api = swagger_client.NodesApi()
 
         self.index = 0
 
@@ -84,3 +85,16 @@ class Cluster:
         except ApiException as e:
             request.resources[0]['amount'] = scaled_size
             self.logger.log_failure(request)
+
+    def get_allocation_probability(self):
+        nodes = self.nodes_api.get_nodes_collection()
+
+        print [node.resources[self.resource]['free'] for node in nodes.nodes]
+
+        # Get smallest amount of free resources on a node
+        remaining = max([node.resources[self.resource]['free'] for node in nodes.nodes])
+
+        remaining /= self.resource_scale
+        print remaining
+        print self.size.get_probability(0, remaining)
+        return self.size.get_probability(0, remaining)
