@@ -2,16 +2,22 @@
     "simulation" : {
         // seed(s) to initialize PRNGs
         "seed" : [0, 1],
+
         // Maximum deployment requests before terminating the simulation
         "max_requests": 20,
-        // offer value for per megaByte
-        "offer" : {"distribution" : "const", "mean" : 1},
+
         // resource to allocate
         "resource" : "memory",
+        // scale for the resources quantities specified in configuration
+        "resource_scale" : 1e6 ,
         // resource size distribution in megaBytes
         "size" : [
             {"distribution" : "pareto" , "shape" : 1, "mode" : 1000, "int" : 1}
         ],
+
+        // offer value for per single megaByte
+        "offer" : {"distribution" : "const", "mean" : 1},
+
         // application to deploy
         "application" : "alpine",
         // API endpoint
