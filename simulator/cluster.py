@@ -79,7 +79,7 @@ class Cluster:
         # Request an application deployment
         try:
             allocation = self.api.put_deployment(app_name, request)
-            allocation.resources[0]['amount'] = int(allocation.resources[0]['amount']) / self.resource_scale
+            allocation.resources[0]['amount'] = scaled_size
             self.logger.log_allocation(allocation)
         except ApiException as e:
             request.resources[0]['amount'] = scaled_size
