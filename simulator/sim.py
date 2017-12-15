@@ -131,10 +131,11 @@ class Sim:
         start_time = time.time()
         # last time we printed the simulation percentage
         prev_time = start_time
+        self.allocation_prob = self.cluster.get_allocation_probability()
         # print percentage for the first time (0%)
         self.print_percentage(True)
         # main simulation loop
-        while self.cluster.get_allocation_probability() > self.halting_threshold:
+        while self.allocation_prob > self.halting_threshold:
             # request next allocation
             self.cluster.request_allocation()
 
@@ -144,6 +145,9 @@ class Sim:
             if curr_time - prev_time >= 1:
                 self.print_percentage(False)
                 prev_time = curr_time
+
+            # Update allocation probability
+            self.allocation_prob = self.cluster.get_allocation_probability()
 
         #Clean up
         self.cluster.finalize()
