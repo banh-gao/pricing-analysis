@@ -5,8 +5,8 @@
 
         // resource to allocate
         "resource" : "memory",
-        // scale for the resources quantities specified in configuration (MebiBytes)
-        "resource_scale" : 2**10,
+        // scale for the resources quantities specified in configuration (MegaBytes)
+        "resource_scale" : 1e6,
         // resource size distribution in megaBytes
         "size" : [
             {"distribution" : "pareto" , "shape" : 1, "mode" : 4000, "int" : 1}
