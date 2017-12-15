@@ -89,12 +89,8 @@ class Cluster:
     def get_allocation_probability(self):
         nodes = self.nodes_api.get_nodes_collection()
 
-        print [node.resources[self.resource]['free'] for node in nodes.nodes]
-
         # Get smallest amount of free resources on a node
         remaining = max([node.resources[self.resource]['free'] for node in nodes.nodes])
 
         remaining /= self.resource_scale
-        print remaining
-        print self.size.get_probability(0, remaining)
         return self.size.get_probability(0, remaining)
