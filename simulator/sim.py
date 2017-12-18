@@ -131,10 +131,12 @@ class Sim:
         start_time = time.time()
         # last time we printed the simulation percentage
         prev_time = start_time
-        self.allocation_prob = self.cluster.get_allocation_probability()
+        self.max_allocation = self.cluster.get_allocation_efficiency()
+        self.allocation = 0
         # print percentage for the first time (0%)
         self.print_percentage(True)
         # main simulation loop
+        self.allocation_prob = self.cluster.get_allocation_probability()
         while self.allocation_prob > self.halting_threshold:
             # request next allocation
             self.cluster.request_allocation()
@@ -148,7 +150,7 @@ class Sim:
 
             # Update allocation probability
             self.allocation_prob = self.cluster.get_allocation_probability()
-
+            self.allocation = self.cluster.get_allocation_efficiency()
         #Clean up
         self.cluster.finalize()
 
@@ -164,13 +166,15 @@ class Sim:
 
     def print_percentage(self, first):
         # go back to the beginning of the line
-        if not first:
+        if first:
+            print "Expected allocation efficiency: %f" % self.max_allocation
+        else:
             sys.stdout.write('\r' + ERASE_LINE)
         # compute percentage
-        perc = min(100, int(math.floor(float(self.requests_count)/self.max_requests*100)))
+        perc = min(100, int(math.floor((1 - self.allocation) / self.max_allocation*100)))
         # print progress bar, percentage, and current element
-        sys.stdout.write("[%-20s] %d%% (requested = %d, total = %d)" %
-                         ('='*(perc/5), perc, self.requests_count, self.max_requests))
+        sys.stdout.write("[%-20s] %d%% (requested = %f, total = %f)" %
+                         ('='*(perc/5), perc, 1 - self.allocation, self.max_allocation))
         sys.stdout.flush()
 
     def get_params(self, run_number):

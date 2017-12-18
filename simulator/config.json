@@ -1,23 +1,29 @@
 {
     "simulation" : {
         // seed(s) to initialize PRNGs
-        "seed" : [0, 1],
+        "seed" : [0],
 
         // resource to allocate
         "resource" : "memory",
         // scale for the resources quantities specified in configuration (MegaBytes)
         "resource_scale" : 1e6,
+
+
+        // Values based on AWS General purpose T2 medium with size/8
+
         // resource size distribution in megaBytes
         "size" : [
-            {"distribution" : "pareto" , "shape" : 1, "mode" : 4000, "int" : 1}
+            {"distribution" : "pareto" , "shape" : 1, "mode" : 500, "int" : 1}
         ],
+        // offer value for per single megaByte per year on
+        // AWS EU Frankfurt 18/12/2017
+        "offer" : {"distribution" : "const", "mean" : 0.47},
+        //"offer" : {"distribution" : "const", "mean" : 100},
+
+
         // Run simulation as long as the probability of allocating resources is
         // higher than this value
         "halting_threshold": 0.05,
-
-        // offer value for per single megaByte
-        "offer" : {"distribution" : "const", "mean" : 1},
-
         // application to deploy
         "application" : "alpine",
         // API endpoint

@@ -86,6 +86,17 @@ class Cluster:
             request.resources[0]['amount'] = scaled_size
             self.logger.log_failure(request)
 
+    def get_allocation_efficiency(self):
+        nodes = self.nodes_api.get_nodes_collection()
+        total = 0
+        wasted = 0
+        for node in nodes.nodes:
+            alloc = node.resources[self.resource]['allocatable']
+            wasted += (alloc % self.size.get_mean()) / float(alloc)
+            total += alloc
+
+        return 1 - (wasted / float(total))
+
     def get_allocation_probability(self):
         nodes = self.nodes_api.get_nodes_collection()
 

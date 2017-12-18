@@ -107,6 +107,9 @@ class Distribution:
         """ Get the probability of assuming values in the given interval"""
         return self.d.get_probability(a, b)
 
+    def get_mean(self):
+        return self.d.get_mean()
+
 class Const:
     """
     Constant random variable
@@ -197,3 +200,6 @@ class Pareto:
 
     def get_probability(self, a, b):
         return integrate.quad(lambda x: stats.pareto.pdf(x, self.shape, self.mode), a, b)[0]
+
+    def get_mean(self):
+        return stats.pareto.mean(self.shape, self.mode)
