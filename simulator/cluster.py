@@ -80,22 +80,22 @@ class Cluster:
         # Request an application deployment
         try:
             allocation = self.api.put_deployment(app_name, request)
-            allocation.resources[self.resource]['allocated'] = scaled_size
+            allocation.resources[self.resource]['used'] = scaled_size
             self.logger.log_allocation(allocation, self.resource)
+            return True
         except ApiException as e:
             request.resources[0]['amount'] = scaled_size
             self.logger.log_failure(request)
+            return False
 
-    def get_allocation_efficiency(self):
-        nodes = self.nodes_api.get_nodes_collection()
+    def get_expected_deployments(self):
         total = 0
-        wasted = 0
-        for node in nodes.nodes:
-            alloc = node.resources[self.resource]['allocatable']
-            wasted += (alloc % self.size.get_mean()) / float(alloc)
-            total += alloc
-
-        return 1 - (wasted / float(total))
+        dep_size = int(self.size.get_mean())
+        for node in self.nodes_api.get_nodes_collection().nodes:
+            alloc_s = node.resources[self.resource]['allocatable'] / \
+                      self.resource_scale
+            total += alloc_s / dep_size
+        return total
 
     def get_allocation_probability(self):
         nodes = self.nodes_api.get_nodes_collection()

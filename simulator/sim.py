@@ -19,6 +19,7 @@ import random
 import scipy
 import time
 import math
+import curses
 from singleton import Singleton
 from config import Config
 from cluster import Cluster
@@ -110,6 +111,8 @@ class Sim:
         # initialize cluster
         self.cluster.initialize(self.config)
 
+        self.stdscr = curses.initscr()
+
         # all done. simulation can start now
         self.initialized = True
 
@@ -131,51 +134,59 @@ class Sim:
         start_time = time.time()
         # last time we printed the simulation percentage
         prev_time = start_time
-        self.max_allocation = self.cluster.get_allocation_efficiency()
-        self.allocation = 0
-        # print percentage for the first time (0%)
-        self.print_percentage(True)
-        # main simulation loop
+        self.expected_deployments = self.cluster.get_expected_deployments()
+        self.deployments = 0
+        self.failed = 0
         self.allocation_prob = self.cluster.get_allocation_probability()
-        while self.allocation_prob > self.halting_threshold:
-            # request next allocation
-            self.cluster.request_allocation()
 
-            # get current real time
-            curr_time = time.time()
-            # if more than a second has elapsed, update the percentage bar
-            if curr_time - prev_time >= 1:
-                self.print_percentage(False)
-                prev_time = curr_time
+        try:
+            # print percentage for the first time (0%)
+            self.print_percentage(True)
+            # main simulation loop
+            while self.allocation_prob > self.halting_threshold:
+                # request next allocation
+                if(self.cluster.request_allocation()):
+                    self.deployments += 1
+                else:
+                    self.failed += 1
 
-            # Update allocation probability
-            self.allocation_prob = self.cluster.get_allocation_probability()
-            self.allocation = self.cluster.get_allocation_efficiency()
-        #Clean up
-        self.cluster.finalize()
+                # get current real time
+                curr_time = time.time()
+                # if more than a second has elapsed, update the percentage bar
+                if curr_time - prev_time >= 1:
+                    self.print_percentage(False)
+                    prev_time = curr_time
 
-        # simulation completed, print the percentage for the last time (100%)
-        self.print_percentage(False)
+                # Update allocation probability
+                self.allocation_prob = self.cluster.get_allocation_probability()
+
+            #Clean up
+            self.cluster.finalize()
+
+            # simulation completed, print the percentage for the last time (100%)
+            self.print_percentage(False)
+        finally:
+            curses.endwin()
+
         # compute how much time the simulation took
         end_time = time.time()
         total_time = round(end_time - start_time)
-        print("\nMaximum deployment requests reached. Terminating.")
+        print("Reached allocation probability of %.2f. Terminating." % self.allocation_prob)
+        print("Failed deployments: %d" % self.failed)
+        print("Successful deployments: %d" % self.deployments)
         print("Total simulation time: %d hours, %d minutes, %d seconds" %
               (total_time / 3600, total_time % 3600 / 60,
                total_time % 3600 % 60))
 
     def print_percentage(self, first):
-        # go back to the beginning of the line
-        if first:
-            print "Expected allocation efficiency: %f" % self.max_allocation
-        else:
-            sys.stdout.write('\r' + ERASE_LINE)
-        # compute percentage
-        perc = min(100, int(math.floor((1 - self.allocation) / self.max_allocation*100)))
-        # print progress bar, percentage, and current element
-        sys.stdout.write("[%-20s] %d%% (requested = %f, total = %f)" %
-                         ('='*(perc/5), perc, 1 - self.allocation, self.max_allocation))
-        sys.stdout.flush()
+        self.stdscr.addstr(0, 0, "Expected successful deployments: %d" % self.expected_deployments)
+
+        self.stdscr.addstr(2, 0, "Allocation probability: %.2f (halting under %.2f)" %
+                           (self.allocation_prob, self.halting_threshold))
+        perc = min(100, int(math.floor(float(self.deployments) / self.expected_deployments*100)))
+        self.stdscr.addstr(3, 0, "[%-20s] %d%% (%d/%d)" % ('='*(perc/5), perc, self.deployments,  self.expected_deployments))
+
+        self.stdscr.refresh()
 
     def get_params(self, run_number):
         """
