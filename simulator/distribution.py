@@ -14,7 +14,6 @@
 # Copyright (C) 2016 Michele Segata <segata@ccs-labs.org>
 # Copyright (C) 2018 Daniel Zozin <d.zozin@fbk.eu>
 
-import scipy.integrate as integrate
 import scipy.stats as stats
 import sys
 
@@ -158,7 +157,8 @@ class Uniform:
         return stats.uniform.mean(self.min, self.max - self.min)
 
     def get_probability(self, a, b):
-        return integrate.quad(lambda x: stats.uniform.pdf(x, self.min, self.max), a, b)[0]
+        return stats.uniform.cdf(b, self.min, self.max - self.min) - \
+            stats.uniform.cdf(a, self.min, self.max - self.min)
 
 class Exp:
     """
@@ -176,7 +176,8 @@ class Exp:
         return stats.expon.rvs(0, self.mean)
 
     def get_probability(self, a, b):
-        return integrate.quad(lambda x: stats.expon.pdf(x, 0, self.mean), a, b)[0]
+        return stats.expon.cdf(b, 0, self.mean) - \
+            stats.expon.cdf(a, 0, self.mean)
 
 class Pareto:
     """
@@ -202,7 +203,8 @@ class Pareto:
             return value
 
     def get_probability(self, a, b):
-        return integrate.quad(lambda x: stats.pareto.pdf(x, self.shape, self.mode), a, b)[0]
+        return stats.pareto.cdf(b, self.shape, self.mode) - \
+            stats.pareto.cdf(a, self.shape, self.mode)
 
     def get_mean(self):
         return stats.pareto.mean(self.shape, self.mode)
