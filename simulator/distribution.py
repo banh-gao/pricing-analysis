@@ -148,11 +148,14 @@ class Uniform:
         self.integer = integer
 
     def get_value(self):
-        value =  stats.uniform.rvs(self.min, self.max)
+        value =  stats.uniform.rvs(self.min, self.max - self.min)
         if self.integer:
             return round(value)
         else:
             return value
+
+    def get_mean(self):
+        return stats.uniform.mean(self.min, self.max - self.min)
 
     def get_probability(self, a, b):
         return integrate.quad(lambda x: stats.uniform.pdf(x, self.min, self.max), a, b)[0]
