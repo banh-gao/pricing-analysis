@@ -130,6 +130,9 @@ class Const:
         else:
             return 0
 
+    def get_mean(self):
+        return self.value
+
 class Uniform:
     """
     Uniform random variable
@@ -178,6 +181,9 @@ class Exp:
     def get_probability(self, a, b):
         return stats.expon.cdf(b, 0, self.mean) - \
             stats.expon.cdf(a, 0, self.mean)
+
+    def get_mean(self):
+        return self.mean
 
 class Pareto:
     """
