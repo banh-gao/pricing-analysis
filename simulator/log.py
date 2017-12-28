@@ -37,7 +37,7 @@ class Log:
         :param allocation: resource allocation
         """
         self.log_file.write(self.TYPE_SUCCESS + ",%f,%s,%f,%f,%f\n" %
-                            (float(allocation.resources[resource]['allocated']),
+                            (float(allocation.resources[resource]['used']),
                              allocation.node,
                              float(allocation.offer),
                              float(allocation.price),
