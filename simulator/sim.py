@@ -111,8 +111,6 @@ class Sim:
         # initialize cluster
         self.cluster.initialize(self.config)
 
-        self.stdscr = curses.initscr()
-
         # all done. simulation can start now
         self.initialized = True
 
@@ -140,6 +138,8 @@ class Sim:
         self.allocation_prob = self.cluster.get_allocation_probability()
 
         try:
+            self.stdscr = curses.initscr()
+
             # print percentage for the first time (0%)
             self.print_percentage(True)
             # main simulation loop
