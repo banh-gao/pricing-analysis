@@ -3,44 +3,36 @@ import pandas as pd
 import numpy as np
 from os.path import basename
 
-PARAMS = ['min_size', 'max_size', 'seed']
+PARAMS = ['scarcity']
 
 # splits the name of an output file by _ and extracts the values of simulation parameters
 def get_params(filename):
     params = basename(filename).rstrip('.csv').split("_")[1:]
     out = {}
     for i in range(len(params)):
-        out[PARAMS[i]] = params[i]
+        out[PARAMS[i]] = float(params[i])
     return out
 
-# Calculate user and provider utilities
-def net_utility(row):
-    if row.accepted == 1:
-        return row.offer
-    else:
-        return 0
-
 parser = argparse.ArgumentParser(description='Process simulation data.')
-parser.add_argument('--setup', dest='setup', required=True,
-                    help='Name of the experiment setup')
 parser.add_argument('in_files', type=str, nargs='+',
                     help='The data input files')
 
 args = parser.parse_args()
 
 #Load Data
-data = pd.DataFrame()
+df = pd.DataFrame()
 for filename in args.in_files:
-    df = pd.read_csv(filename)
+    csv = pd.read_csv(filename)
+
     params = get_params(filename)
     for name, val in params.items():
-        df[name] = val
-    data = data.append(df, ignore_index=True)
+        csv[name] = val
 
-# Acceptance rate by size
-data['utility'] = data.apply(net_utility, axis=1)
+    df = df.append(csv, ignore_index=True)
 
-bysize = data.groupby(['max_size'])
-utilities = bysize.agg({'utility': np.sum}).reset_index()
+df = df[df.accepted == 1]
 
-utilities.to_pickle("./utilities_%s.pkl" % args.setup)
+# Calculate utility of each deployment
+df['utility'] = df.apply(lambda x : x.unit_price, axis=1)
+
+df.to_pickle("./utilities.pkl")
