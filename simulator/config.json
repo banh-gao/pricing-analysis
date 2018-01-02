@@ -1,16 +1,15 @@
 {
     "simulation" : {
         // seed(s) to initialize PRNGs
-        "seed" : [0, 1, 2, 3, 4],
+        "seed" : [0],
 
         // resource to allocate
         "resource" : "memory",
         // scale for the resources quantities specified in configuration (MegaBytes)
         "resource_scale" : 1e6,
 
-        // Mean value based on AWS General purpose T2 medium with size/4 = 1024 MB
-        // resource size distribution in megaBytes
-        "size" : {"distribution" : "unif" , "min" : 512, "max" : 1536, "int" : 1},
+        // Memory size value in Mb based on AWS General purpose T2 medium with size/4
+        "size" : {"distribution" : "const" , "mean" : 1024},
         // Set offer higher than upper price bound in order to let always accept, statistics are then
         // based on effective price, not on offer
         "offer" : {"distribution" : "const", "mean" : 10},
@@ -23,6 +22,6 @@
         // API endpoint
         "endpoint" : "http:\/\/localhost:8080\/api",
         // log file name using configuration parameters
-        "output" : "output_{seed}.csv"
+        "output" : "output.csv"
     }
 }
