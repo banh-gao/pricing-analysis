@@ -20,7 +20,7 @@
         // application to deploy
         "application" : "alpine",
         // API endpoint
-        "endpoint" : "http:\/\/localhost:8080\/api",
+        "endpoint" : "http:\/\/localhost:5000\/api",
         // log file name using configuration parameters
         "output" : "output.csv"
     }

@@ -44,8 +44,6 @@ plt.savefig('welfare.pdf')
 plt.clf()
 
 for label, grp in df.groupby('scarcity'):
-    grp = grp.sort_values(by=['node','utilization'])
-
     deployments = range(0, len(grp))
 
     plt.step(deployments, grp['utility'],
