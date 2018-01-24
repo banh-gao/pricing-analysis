@@ -5,13 +5,11 @@
 
         // resource to allocate
         "resource" : "memory",
-        // scale for the resources quantities specified in configuration (MegaBytes)
+        // scale for the resource size value (MegaBytes)
         "resource_scale" : 1e6,
 
-        // Memory size value in Mb based on AWS General purpose T2 medium with size/4
+        // Memory size value in Mb
         "size" : {"distribution" : "const" , "mean" : 1024},
-        // Set offer higher than upper price bound in order to let always accept, statistics are then
-        // based on effective price, not on offer
         "offer" : {"distribution" : "const", "mean" : 10},
 
         // Run simulation as long as the probability of allocating resources is
@@ -20,7 +18,7 @@
         // application to deploy
         "application" : "alpine",
         // API endpoint
-        "endpoint" : "http:\/\/localhost:5000\/api",
+        "endpoint" : "http:\/\/localhost:8080\/api",
         // log file name using configuration parameters
         "output" : "output.csv"
     }
